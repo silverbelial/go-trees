@@ -11,39 +11,6 @@ type BitTrieNode struct {
 	Value	interface{}
 }
 
-type BitTrail interface{
-	Pop() bool
-	Empty() bool
-}
-
-// pre defined Byte BitTrail
-type Byte struct {
-	value	uint8
-	bit	int
-}
-
-func(b *Byte) Pop() bool{
-	if b.Empty() {
-		return false
-	}
-	r := (uint8(1)<<uint(b.bit)) & b.value
-	b.bit -= 1
-	return r > 0
-}
-func(b *Byte) Empty() bool {
-	return b.bit < 0
-}
-
-func NewByte(v uint8, maxBit int) *Byte{
-	if maxBit > 7 {
-		maxBit = 7
-	}
-	return &Byte{
-		value:  v,
-		bit: maxBit,
-	}
-}
-
 func(bt *BitTrie) Initialize() *BitTrie {
 	bt.root = new(BitTrieNode)
 	return bt

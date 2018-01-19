@@ -6,6 +6,7 @@ const (
 
 )
 
+// Trie interface
 type Trie interface {
 	Initialize() error
 	Insert(BitTrail, interface{})
