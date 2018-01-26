@@ -2,7 +2,7 @@ package trie
 
 import (
 	"net"
-	"fmt"
+	//"fmt"
 )
 
 // Bit Trie router
@@ -99,10 +99,10 @@ func(ip *TrieIpV4) Pop() bool {
 	if step > 3 {
 		return false
 	}
-	fmt.Println("ip pop:",(uint8(1)<<uint(7-bits)), ip.ip.To4()[step] )
+	//fmt.Println("ip pop:",(uint8(1)<<uint(7-bits)), ip.ip.To4()[step] )
 	r := (uint8(1)<<uint(7-bits)) & ip.ip.To4()[step]
 	ip.bit += 1
-	fmt.Println("ip r:",r, r> 0)
+	//fmt.Println("ip r:",r, r> 0)
 	return r>0
 }
 
