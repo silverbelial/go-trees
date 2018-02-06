@@ -1,18 +1,11 @@
 package trie
 
 type BitTrie struct {
-	root *BitTrieNode
+	root BitTrieNode
 }
 
-type BitTrieNode struct {
-	Left	*BitTrieNode
-	Right	*BitTrieNode
-	//Bit 	bool
-	Value	interface{}
-}
-
-func(bt *BitTrie) Initialize() *BitTrie {
-	bt.root = new(BitTrieNode)
+func(bt *BitTrie) Initialize(r BitTrieNode) *BitTrie {
+	bt.root = r
 	return bt
 }
 
@@ -20,24 +13,28 @@ func(bt *BitTrie) Insert(t BitTrail, value interface{}) {
 	if bt.root == nil {
 		return
 	}
-	bt.root.Insert(t, value)
+	Insert(bt.root, t, value)
 }
 
-func(btn *BitTrieNode) Insert(t BitTrail, value interface{}) {
+func Insert(btn BitTrieNode, t BitTrail, value interface{}) {
 	if t.Empty() {
-		btn.Value = value
+		btn.SetValue(value)
 	} else {
 		bit := t.Pop()
 		if bit {
-			if btn.Right == nil {
-				btn.Right = new(BitTrieNode)
+			right, has := btn.Right()
+			if !has {
+				btn.GenRight()
+				right, _ = btn.Right()
 			}
-			btn.Right.Insert(t, value)
+			Insert(right, t, value)
 		} else {
-			if btn.Left == nil {
-				btn.Left = new(BitTrieNode)
+			left, has := btn.Left()
+			if !has {
+				btn.GenLeft()
+				left, _ = btn.Left()
 			}
-			btn.Left.Insert(t, value)
+			Insert(left, t, value)
 		}
 	}
 }
@@ -46,31 +43,32 @@ func(bt *BitTrie) Search(t BitTrail, full bool) interface{} {
 	if bt.root == nil {
 		return nil
 	}
-	return bt.root.Search(t, full)
+	return Search(bt.root, t, full)
 }
 
-func(btn *BitTrieNode) Search(t BitTrail, full bool) interface{} {
+func Search(btn BitTrieNode, t BitTrail, full bool) interface{} {
 	if t.Empty() {
-		return btn.Value
+		return btn.Value()
 	}
 	if t.Pop() {
-		if btn.Right == nil {
+		right, has := btn.Right()
+		if !has {
 			if full {
 				return nil
 			} else {
-				return btn.Value
+				return btn.Value()
 			}
 		}
-		return btn.Right.Search(t, full)
+		return Search(right, t, full)
 	}else {
-		if btn.Left == nil {
+		left ,has := btn.Left()
+		if !has {
 			if full {
 				return nil
 			} else {
-				return btn.Value
+				return btn.Value()
 			}
 		}
-		return btn.Left.Search(t, full)
+		return Search(left, t, full)
 	}
-
 }

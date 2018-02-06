@@ -6,7 +6,7 @@ import (
 )
 
 func TestBitTrie_Insert(t *testing.T) {
-	bitTrie := new(BitTrie).Initialize()
+	bitTrie := new(BitTrie).Initialize(new(BitTrieNodeMem))
 	fmt.Println("after init")
 	bitTrie.Insert(NewByte(7,2), "7") // 00000111
 	bitTrie.Insert(NewByte(0,2), "0") // 00000000
