@@ -1,6 +1,8 @@
 package itvtree
 
-import "github.com/silverbelial/go-trees/rbtree"
+import (
+	"github.com/silverbelial/go-trees/rbtree"
+)
 
 //ItvTree implementation of interval-tree
 //base on rb-tree
@@ -33,6 +35,37 @@ func (n *IntervalItem) Less(i rbtree.Item) bool {
 	return n.Start.Less(an.Start)
 }
 
+//AddSuccessor implements rbtree.ExtraItem
+func (n *IntervalItem) AddSuccessor(successor rbtree.ExtraItem, left bool) {
+	sn, ok := successor.(*IntervalItem)
+	if ok {
+		if n.maxPoint.Smaller(sn.maxPoint) {
+			n.maxPoint = sn.maxPoint
+		}
+		if sn.minPoint.Smaller(n.minPoint) {
+			n.minPoint = sn.minPoint
+		}
+	}
+}
+
+//Recalculate implements rbtree.ExtraItem
+func (n *IntervalItem) Recalculate(left, right rbtree.ExtraItem) {
+	ln, ok := left.(*IntervalItem)
+	if !ok {
+		return
+	}
+	rn, ok := right.(*IntervalItem)
+	if !ok {
+		return
+	}
+	if rn.maxPoint.Smaller(ln.maxPoint) {
+		n.maxPoint = ln.maxPoint
+	} else {
+		n.maxPoint = rn.maxPoint
+	}
+	n.minPoint = ln.minPoint
+}
+
 //Item comparable
 type Item interface {
 	Smaller(Item) bool
@@ -51,7 +84,7 @@ func Init() *ItvTree {
 func (t *ItvTree) Insert(start, end Item) {
 	// t.rbTree.
 
-	i := &IntervalItem{Start: start, End: end}
+	i := &IntervalItem{Start: start, End: end, maxPoint: end, minPoint: start}
 	t.rbTree.Insert(i)
 }
 

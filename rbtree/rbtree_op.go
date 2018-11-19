@@ -279,6 +279,7 @@ func (t *RbTree) successor(x *Node) *Node {
 }
 
 func (t *RbTree) delete(key *Node) *Node {
+	//z is the target node
 	z := t.search(key)
 
 	if z == t.NIL {
@@ -286,18 +287,24 @@ func (t *RbTree) delete(key *Node) *Node {
 	}
 	ret := &Node{t.NIL, t.NIL, t.NIL, z.Color, z.Item}
 
+	//y is the node to be removed from tree
 	var y *Node
+	//x is the node to check RB-tree rules
 	var x *Node
 
 	if z.Left == t.NIL || z.Right == t.NIL {
+		//z has at least one child missing, delete itself; only child will replace it if exists
 		y = z
 	} else {
+		//if both children exist, find successor to delete
 		y = t.successor(z)
 	}
 
-	if y.Left != t.NIL {
+	if y.Left != t.NIL { // left child not nil, left child will be moved up
 		x = y.Left
 	} else {
+		// else use right child;
+		// nil will be used when either child is nil
 		x = y.Right
 	}
 
@@ -315,16 +322,17 @@ func (t *RbTree) delete(key *Node) *Node {
 		y.Parent.Right = x
 	}
 
-	if y != z {
+	if y != z { //successor item will be at target's place
 		z.Item = y.Item
 	}
 
-	if y.Color == cBlack {
+	if y.Color == cBlack { //if successor is black
 		t.deleteFixup(x)
 	}
 
 	t.count--
-
+	//clean possible set
+	t.NIL.Parent = t.NIL
 	return ret
 }
 
@@ -386,7 +394,6 @@ func (t *RbTree) deleteFixup(x *Node) {
 
 //refresh extra item status
 func (t *RbTree) refreshExtra(x *Node) {
-
 	var ex, l, r ExtraItem
 	var ok bool
 
